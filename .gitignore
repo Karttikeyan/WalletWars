@@ -1,0 +1,16 @@
+# Secretos — NUNCA subir
+.env
+.env.local
+.env.*.local
+
+# Dependencias
+node_modules/
+
+# Logs y temporales
+*.log
+npm-debug.log*
+.DS_Store
+
+# Build
+dist/
+build/
