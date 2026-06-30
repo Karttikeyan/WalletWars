@@ -14,3 +14,7 @@ npm-debug.log*
 # Build
 dist/
 build/
+*:Zone.Identifier
+*.bak
+*.PNG
+*.png:Zone.Identifier
