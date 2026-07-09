@@ -438,6 +438,7 @@
     .conf { position:absolute; width:8px; height:8px; border-radius:2px; animation: confFall linear infinite; }
     @keyframes confFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1;} 100%{transform:translateY(110vh) rotate(720deg);opacity:0.3;} }
   </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
 </head>
 <body>
 
@@ -514,17 +515,17 @@
     <div class="modal-title">Connect Your Wallet</div>
     <div class="modal-sub">Choose your weapon to enter the arena</div>
     <div class="modal-divider"></div>
-    <button class="wallet-option" onclick="selectWallet('metamask')">
+    <button class="wallet-option" onclick="connectWallet('metamask')">
       <div class="wallet-logo metamask">🦊</div>
       <div class="wallet-info"><div class="wallet-name">MetaMask</div><div class="wallet-desc">Browser extension wallet</div></div>
       <div class="wallet-arrow">›</div>
     </button>
-    <button class="wallet-option" onclick="selectWallet('coinbase')">
+    <button class="wallet-option" onclick="connectWallet('coinbase')">
       <div class="wallet-logo coinbase">🔵</div>
       <div class="wallet-info"><div class="wallet-name">Coinbase Wallet</div><div class="wallet-desc">Native Base ecosystem wallet</div></div>
       <div class="wallet-arrow">›</div>
     </button>
-    <button class="wallet-option" onclick="selectWallet('walletconnect')">
+    <button class="wallet-option" onclick="connectWallet('walletconnect')">
       <div class="wallet-logo walletconnect">🔗</div>
       <div class="wallet-info"><div class="wallet-name">WalletConnect</div><div class="wallet-desc">Connect any mobile wallet</div></div>
       <div class="wallet-arrow">›</div>
@@ -755,9 +756,57 @@ document.getElementById('modalOverlay').addEventListener('click', function(e) {
 });
 
 // ══ WALLET ══
-function selectWallet(type) {
-  closeModal();
-  setTimeout(() => startForging(), 300);
+let walletAddress = null;
+let sessionToken = null;
+
+async function connectWallet(type) {
+  if (type === 'walletconnect') {
+    alert('WalletConnect coming soon — please use MetaMask or Coinbase Wallet for now.');
+    return;
+  }
+  if (typeof window.ethereum === 'undefined') {
+    alert('No wallet detected. Please install MetaMask or Coinbase Wallet.');
+    return;
+  }
+  try {
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const address = ethers.getAddress(accounts[0]);
+
+    const nonceRes = await fetch(`/api/auth/nonce/${address}`);
+    const { nonce } = await nonceRes.json();
+
+    const domain = window.location.host;
+    const uri = window.location.origin;
+    const issuedAt = new Date().toISOString();
+    const message = `${domain} wants you to sign in with your Ethereum account:\n${address}\n\nSign in to WalletWars\n\nURI: ${uri}\nVersion: 1\nChain ID: 8453\nNonce: ${nonce}\nIssued At: ${issuedAt}`;
+
+    const signature = await window.ethereum.request({
+      method: 'personal_sign',
+      params: [message, address],
+    });
+
+    const verifyRes = await fetch('/api/auth/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, signature }),
+    });
+    const verifyData = await verifyRes.json();
+
+    if (!verifyRes.ok || !verifyData.ok) {
+      alert('Login failed: ' + (verifyData.error || 'unknown error'));
+      return;
+    }
+
+    walletAddress = verifyData.address;
+    sessionToken = verifyData.token;
+
+    closeModal();
+    setTimeout(() => startForging(), 300);
+  } catch (err) {
+    console.error('Wallet connection error:', err);
+    if (err.code === 4001) return; // usuario rechazo la firma, sin error agresivo
+    alert('Something went wrong connecting your wallet. Please try again.');
+  }
 }
 
 // ══ FORGING ══

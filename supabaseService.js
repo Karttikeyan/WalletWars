@@ -96,7 +96,25 @@ async function getCombatantPublic(name) {
   if (error) throw error;
   return data;
 }
+// Por nombre · ficha COMPLETA (backend, para el combate).
+// Reconstruye scores{} desde las columnas planas score_* que
+// espera resolveCombat. Trae id, elo y wallet_power incluidos.
+async function getCombatantByName(name) {
+  const { data, error } = await supabase
+    .from('combatants').select('*').ilike('combatant_name', name).single();
+  if (error) throw error;
 
+  return {
+    ...data,
+    scores: {
+      tx: data.score_tx,
+      age: data.score_age,
+      contracts: data.score_contracts,
+      diversification: data.score_diversification,
+      gas: data.score_gas,
+    },
+  };
+}
 // ── Tableros ────────────────────────────────────────────────
 async function getPowerBoard(limit = 100) {
   const { data, error } = await supabase
@@ -194,8 +212,28 @@ async function getIncomingMatches(combatantId, limit = 20) {
 module.exports = {
   supabase,
   eloDeltas, rankFromElo, activeSeasonId,
-  forgeCombatant, getCombatantPrivate, getCombatantPublic,
+  forgeCombatant, getCombatantPrivate, getCombatantPublic,getCombatantByName,
   getPowerBoard, getSeasonBoard,
   saveBattlePlan, getActiveBattlePlan,
   recordMatch, getIncomingMatches,
 };
+
+// ============================================================
+//  BATTLE PLAN · umbrales de credencial para desbloquear comodín
+//  Se evalúan sobre la ficha COMPLETA del combatiente (stats crudas).
+// ============================================================
+const WILDCARD_THRESHOLDS = {
+  veterans_gambit:   (c) => c.age_days >= 365,
+  multichain_strike: (c) => c.real_token_count >= 15,
+  builders_override: (c) => c.unique_contracts >= 50,
+  giant_killer:      () => true, // sin credencial extra: el riesgo (ir perdiendo) ya es el precio
+};
+
+function isWildcardUnlocked(combatant, wildcard) {
+  if (!wildcard) return false;
+  const check = WILDCARD_THRESHOLDS[wildcard];
+  return check ? check(combatant) : false;
+}
+
+module.exports.WILDCARD_THRESHOLDS = WILDCARD_THRESHOLDS;
+module.exports.isWildcardUnlocked = isWildcardUnlocked;
