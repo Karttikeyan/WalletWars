@@ -1,0 +1,25 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    # cada 3 dias a las 09:00 UTC -- de sobra para no llegar nunca a los 7 dias de inactividad
+    - cron: '0 9 */3 * *'
+  workflow_dispatch: {}   # boton "Run workflow" manual en la pestaña Actions, para probarlo cuando quieras
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/seasons?select=id&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
+          echo "Supabase respondio con codigo HTTP: $response"
+          if [ "$response" -ge 200 ] && [ "$response" -lt 300 ]; then
+            echo "OK: proyecto activo"
+          else
+            echo "AVISO: respuesta inesperada, revisa el proyecto en el dashboard de Supabase"
+            exit 1
+          fi
