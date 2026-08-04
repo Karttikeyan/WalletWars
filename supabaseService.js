@@ -209,11 +209,27 @@ async function getIncomingMatches(combatantId, limit = 20) {
   return data;
 }
 
+// Historial completo de combates de un combatiente (como atacante o como
+// defensor), con los nombres ya resueltos -- para la pestaña "My Challenges"
+async function getMatchHistory(combatantId, limit = 20) {
+  const { data, error } = await supabase.from('matches')
+    .select(`
+      id, score, created_at, winner_id,
+      attacker_id, defender_id,
+      attacker:attacker_id ( combatant_name ),
+      defender:defender_id ( combatant_name )
+    `)
+    .or(`attacker_id.eq.${combatantId},defender_id.eq.${combatantId}`)
+    .order('created_at', { ascending: false }).limit(limit);
+  if (error) throw error;
+  return data;
+}
+
 module.exports = {
   supabase,
   eloDeltas, rankFromElo, activeSeasonId,
   forgeCombatant, getCombatantPrivate, getCombatantPublic,getCombatantByName,
-  getPowerBoard, getSeasonBoard,
+  getPowerBoard, getSeasonBoard, getMatchHistory,
   saveBattlePlan, getActiveBattlePlan,
   recordMatch, getIncomingMatches,
 };

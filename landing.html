@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>WalletWars — Your Wallet. Your Weapon.</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@700;900&family=IM+Fell+English:ital@1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:       #C9A84C;
+  --gold-light: #F0D080;
+  --gold-dark:  #8B6914;
+  --red-deep:   #3a0a08;
+  --black:      #080808;
+  --silver:     #A8B4C0;
+
+  /* mismos tonos por rango que usa la Combat Card real */
+  --bronze: #C9A84C;  --bronze-l: #F0D080; --bronze-d: #8B6914;
+  --silver-r: #A8B4C0; --silver-l: #E4EAF0; --silver-d: #6B7684;
+  --gold-r: #E0B84C;  --gold-l2: #FFE9A8;  --gold-d2: #A67F1E;
+  --diamond:#7FB8F0;  --diamond-l:#C0E0FF; --diamond-d:#3D6E9E;
+  --legend: #FFD98C;  --legend-l:#FFF0C8;  --legend-d:#C99A3E;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--silver);
+  font-family: 'Cinzel', serif;
+  overflow-x: hidden;
+}
+a { color: inherit; }
+.mono { font-family: 'IM Fell English', serif; font-style: italic; }
+
+/* ── decoracion global reutilizada del hero real ── */
+.vignette {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 0%, rgba(8,8,8,0) 20%, rgba(8,8,8,0.75) 100%),
+    radial-gradient(ellipse 55% 50% at 50% 20%, rgba(58,10,8,0.35) 0%, rgba(26,4,4,0.3) 35%, transparent 70%);
+}
+.embers { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+.ember { position: absolute; border-radius: 50%; background: radial-gradient(circle, #F0D080, #C9A84C, transparent); opacity: 0; animation: ember-rise linear infinite; }
+@keyframes ember-rise {
+  0%   { transform: translateY(100vh) translateX(0) scale(1); opacity: 0; }
+  5%   { opacity: 0.7; }
+  80%  { opacity: 0.1; }
+  100% { transform: translateY(-15vh) translateX(var(--dx)) scale(0.2); opacity: 0; }
+}
+
+section { position: relative; z-index: 2; padding: 7vh 6vw; }
+
+.rule-divider { display:flex; align-items:center; justify-content:center; gap:14px; max-width: 520px; margin: 0 auto 3.5rem; }
+.rule-divider::before, .rule-divider::after { content:''; flex:1; height:1px; background: linear-gradient(to right, transparent, rgba(201,168,76,0.5)); }
+.rule-divider::after { background: linear-gradient(to left, transparent, rgba(201,168,76,0.5)); }
+.rule-divider .gem { width:8px; height:8px; background: var(--gold); transform: rotate(45deg); box-shadow: 0 0 8px rgba(201,168,76,0.6); flex-shrink:0; }
+
+.section-inner { max-width: 1000px; margin: 0 auto; text-align: center; }
+.section-eyebrow { font-size: 0.58rem; letter-spacing: 0.5em; color: rgba(240,208,128,0.7); text-transform: uppercase; margin-bottom: 1rem; }
+.section-title { font-family: 'Cinzel Decorative', serif; font-weight: 900; font-size: clamp(1.6rem, 3.4vw, 2.6rem); color: var(--gold-light); margin-bottom: 1.2rem; letter-spacing: 0.02em; }
+.section-sub { font-family: 'IM Fell English', serif; font-style: italic; font-size: clamp(0.95rem, 1.6vw, 1.15rem); color: rgba(168,180,192,0.75); max-width: 640px; margin: 0 auto 3rem; line-height: 1.5; }
+
+/* ═══════════ HERO ═══════════ */
+.hero {
+  min-height: 100svh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding: 8vh 6vw;
+}
+.hero::before {
+  content:''; position:absolute; inset:0; z-index:0;
+  background:
+    radial-gradient(ellipse 60% 45% at 30% 15%, rgba(139,105,20,0.22), transparent 60%),
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(10,10,14,0.9), transparent 70%);
+}
+.crest-emblem { font-size: clamp(3rem, 7vw, 5rem); margin-bottom: 1.2rem; filter: drop-shadow(0 0 22px rgba(201,168,76,0.5)); }
+.eyebrow { font-size:0.58rem; letter-spacing:0.55em; color:rgba(240,208,128,0.7); margin-bottom:1.4rem; display:flex; align-items:center; gap:10px; text-shadow:0 0 8px rgba(201,168,76,0.6); }
+.eyebrow-line { width:30px; height:1px; background:rgba(201,168,76,0.5); }
+.logo { font-family:'Cinzel Decorative', serif; font-weight:900; font-size:clamp(3rem,7vw,5.5rem); line-height:0.95;
+  background: linear-gradient(175deg, #fff5cc 0%, #F0D080 15%, #C9A84C 35%, #8B6914 55%, #C9A84C 72%, #F0D080 85%, #fff5cc 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:1.2rem; }
+.divider { display:flex; align-items:center; gap:10px; margin-bottom:1.6rem; width:100%; max-width:340px; }
+.divider-line { flex:1; height:1px; background:linear-gradient(to right, var(--gold-dark), var(--gold), var(--gold-dark)); opacity:0.6; }
+.divider-diamond { width:7px; height:7px; background:var(--gold); transform:rotate(45deg); box-shadow:0 0 6px rgba(201,168,76,0.6); flex-shrink:0; }
+.tagline { font-family:'IM Fell English', serif; font-style:italic; font-size:clamp(0.95rem,1.8vw,1.2rem); color:var(--silver); letter-spacing:0.06em; margin-bottom:2.8rem; opacity:0.9; }
+.btn-arena { position:relative; background:none; border:none; cursor:pointer; padding:0; font-family:'Cinzel', serif; }
+.btn-inner { display:flex; align-items:center; justify-content:center; gap:12px; padding:1rem 2.8rem;
+  background: linear-gradient(135deg, #6b4f10 0%, #C9A84C 25%, #F0D080 50%, #C9A84C 75%, #6b4f10 100%);
+  clip-path: polygon(18px 0%, calc(100% - 18px) 0%, 100% 50%, calc(100% - 18px) 100%, 18px 100%, 0% 50%);
+  transition: all 0.3s ease; min-width:280px; }
+.btn-arena:hover .btn-inner { box-shadow: 0 0 50px rgba(201,168,76,0.55); transform: scale(1.03); }
+.btn-text { font-size:0.72rem; font-weight:700; letter-spacing:0.42em; color:#0a0700; text-transform:uppercase; }
+.btn-icon { font-size:0.9rem; color:rgba(10,7,0,0.55); }
+.hero-scroll-hint { margin-top: 3rem; font-size: 0.55rem; letter-spacing: 0.35em; text-transform: uppercase; color: rgba(168,180,192,0.4); }
+
+/* ═══════════ HOW IT WORKS ═══════════ */
+.flow { display:flex; gap:2rem; flex-wrap:wrap; justify-content:center; margin-top: 1rem; }
+.flow-step { flex:1 1 260px; max-width:300px; background: linear-gradient(160deg, rgba(255,255,255,0.02), rgba(255,255,255,0)); border:1px solid rgba(201,168,76,0.15); border-radius:10px; padding:2rem 1.5rem; position:relative; }
+.step-icon { font-size:1.8rem; margin-bottom:0.8rem; filter: drop-shadow(0 0 10px rgba(201,168,76,0.4)); }
+.step-index { font-size:0.5rem; letter-spacing:0.35em; color:var(--gold); text-transform:uppercase; margin-bottom:0.6rem; }
+.flow-step h3 { font-family:'Cinzel Decorative', serif; font-size:1rem; color:var(--gold-light); margin-bottom:0.8rem; letter-spacing:0.03em; }
+.flow-step p { font-size:0.8rem; line-height:1.6; color:rgba(168,180,192,0.75); }
+
+/* ═══════════ STRATEGY ═══════════ */
+.badges-strip { display:flex; justify-content:center; gap:14px; margin: 2.5rem 0; flex-wrap:wrap; }
+.mini-badge { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.3rem;
+  border:1.5px solid rgba(201,168,76,0.5); background:rgba(0,0,0,0.55); }
+
+/* ═══════════ ROADMAP ═══════════ */
+.rank-row { display:flex; gap:1.2rem; flex-wrap:wrap; justify-content:center; margin-top:1rem; }
+.rank-card { flex:1 1 180px; max-width:200px; padding:1.6rem 1rem; border-radius:10px; text-align:center;
+  background: linear-gradient(160deg, rgba(255,255,255,0.03), transparent); border:1px solid; }
+.rank-card .rank-icon { font-size:1.8rem; margin-bottom:0.6rem; }
+.rank-card .rank-name { font-family:'Cinzel Decorative', serif; font-size:0.85rem; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.4rem; }
+.rank-card .rank-desc { font-size:0.68rem; line-height:1.5; color: rgba(168,180,192,0.65); }
+.rank-card.bronze  { border-color: rgba(139,105,20,0.5); }
+.rank-card.silver  { border-color: rgba(168,180,192,0.5); }
+.rank-card.gold    { border-color: rgba(224,184,76,0.6); }
+.rank-card.diamond { border-color: rgba(127,184,240,0.6); }
+.rank-card.legend  { border-color: rgba(255,217,140,0.8); box-shadow: 0 0 22px rgba(255,217,140,0.15); }
+.rank-card.bronze  .rank-name { color: var(--bronze-l); }
+.rank-card.silver  .rank-name { color: var(--silver-l); }
+.rank-card.gold    .rank-name { color: var(--gold-l2); }
+.rank-card.diamond .rank-name { color: var(--diamond-l); }
+.rank-card.legend  .rank-name { color: var(--legend-l); }
+
+.season-note { margin-top: 2.5rem; font-size: 0.62rem; letter-spacing: 0.2em; color: rgba(168,180,192,0.5); text-transform: uppercase; }
+
+/* ═══════════ FOOTER CTA ═══════════ */
+.footer-cta { text-align:center; padding: 8vh 6vw 10vh; }
+</style>
+</head>
+<body>
+
+<div class="vignette"></div>
+<div class="embers" id="embers"></div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="eyebrow"><div class="eyebrow-line"></div>FORGED ON BASE · SEASON 1<div class="eyebrow-line"></div></div>
+  <div class="crest-emblem">⚔</div>
+  <div class="logo">WALLET<br>WARS</div>
+  <div class="divider"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
+  <div class="tagline">Your wallet. Your weapon.</div>
+  <a href="index.html" class="btn-arena">
+    <div class="btn-inner">
+      <span class="btn-icon">⚔</span>
+      <span class="btn-text">Enter the Arena</span>
+      <span class="btn-icon">⚔</span>
+    </div>
+  </a>
+  <div class="hero-scroll-hint">↓ How it works</div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section id="how">
+  <div class="rule-divider"><span class="gem"></span></div>
+  <div class="section-inner">
+    <div class="section-eyebrow">Every Wallet Tells a Story</div>
+    <h2 class="section-title">Your On-Chain History Is Your Combat Card</h2>
+    <p class="section-sub">Connect your wallet and WalletWars reads your real Base activity — no mock stats, no pay-to-win. What you've actually done on-chain becomes the weapon you fight with.</p>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-icon">🔗</div>
+        <div class="step-index">Step 1</div>
+        <h3>Connect</h3>
+        <p>Sign in with your wallet — no gas, no transaction. Just a signature to prove it's really yours.</p>
+      </div>
+      <div class="flow-step">
+        <div class="step-icon">🔨</div>
+        <div class="step-index">Step 2</div>
+        <h3>Forge</h3>
+        <p>Your transactions, age on Base, contracts touched, tokens held, and gas burned become five real combat stats.</p>
+      </div>
+      <div class="flow-step">
+        <div class="step-icon">⚔</div>
+        <div class="step-index">Step 3</div>
+        <h3>Battle</h3>
+        <p>Duel other wallets best-of-5, round by round, stat by stat. Win, climb the board, evolve your card.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STRATEGY ═══ -->
+<section id="strategy">
+  <div class="rule-divider"><span class="gem"></span></div>
+  <div class="section-inner">
+    <div class="section-eyebrow">Beyond Raw Stats</div>
+    <h2 class="section-title">Strategy Wins Duels, Not Just Power</h2>
+    <p class="section-sub">A best-of-5 duel isn't decided by Wallet Power alone. You choose the order your cards fight in, hide your strongest for last — or first, to break morale — and arm yourself with wildcards earned through real on-chain behavior.</p>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-icon">🃏</div>
+        <div class="step-index">Wildcards</div>
+        <h3>Earned, Not Bought</h3>
+        <p>Veteran's Gambit, Multichain Strike, Builder's Override, Giant Killer — each wildcard unlocks only if your wallet's history actually earns it. No credential, no wildcard.</p>
+      </div>
+      <div class="flow-step">
+        <div class="step-icon">🎖</div>
+        <div class="step-index">Badges</div>
+        <h3>Trophies From Battle</h3>
+        <p>Win streaks, giant-slaying upsets, season milestones — badges attach to your card permanently, visible to every wallet you face in the arena.</p>
+      </div>
+      <div class="flow-step">
+        <div class="step-icon">🧠</div>
+        <div class="step-index">Battle Plan</div>
+        <h3>Order Is a Weapon</h3>
+        <p>Set your five-card order and wildcard before the duel starts. Your opponent only sees rank and shape — never your plan. Outsmart, don't just outgun.</p>
+      </div>
+    </div>
+    <div class="badges-strip">
+      <div class="mini-badge" style="color:#CC2200;" title="First Blood">🩸</div>
+      <div class="mini-badge" style="color:#FF6600;" title="On Fire">🔥</div>
+      <div class="mini-badge" style="color:#8b5cf6;" title="Giant Killer">💀</div>
+      <div class="mini-badge" style="color:#A8B4C0;" title="Untouchable">⚡</div>
+      <div class="mini-badge" style="color:#F0D080;" title="Base Legend">👑</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ROADMAP ═══ -->
+<section id="roadmap">
+  <div class="rule-divider"><span class="gem"></span></div>
+  <div class="section-inner">
+    <div class="section-eyebrow">The Path Ahead</div>
+    <h2 class="section-title">Five Ranks. One Season Board.</h2>
+    <p class="section-sub">Every wallet forges in as Bronze. Rank climbs with ELO — win against tougher opponents, climb faster. A bad day doesn't cost you your rank; only the Season Board decides who's Legend.</p>
+    <div class="rank-row">
+      <div class="rank-card bronze">
+        <div class="rank-icon">🥉</div>
+        <div class="rank-name">Bronze</div>
+        <div class="rank-desc">The Unproven. Every wallet starts here — art dark, stats unknown.</div>
+      </div>
+      <div class="rank-card silver">
+        <div class="rank-icon">🥈</div>
+        <div class="rank-name">Silver</div>
+        <div class="rank-desc">Blooded. First wins landed, first scars earned.</div>
+      </div>
+      <div class="rank-card gold">
+        <div class="rank-icon">🥇</div>
+        <div class="rank-name">Gold</div>
+        <div class="rank-desc">The Destroyer. A wallet with a real record behind it.</div>
+      </div>
+      <div class="rank-card diamond">
+        <div class="rank-icon">💎</div>
+        <div class="rank-name">Diamond</div>
+        <div class="rank-desc">Giant Killer territory. Beaten wallets far above your own power.</div>
+      </div>
+      <div class="rank-card legend">
+        <div class="rank-icon">👑</div>
+        <div class="rank-name">Base Legend</div>
+        <div class="rank-desc">Top of the Season Board. Full art, no frame needed.</div>
+      </div>
+    </div>
+    <div class="season-note">Season II · new arenas & modes · direction, not promises</div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER CTA ═══ -->
+<section class="footer-cta">
+  <div class="rule-divider"><span class="gem"></span></div>
+  <div class="section-inner">
+    <h2 class="section-title">Your Wallet Has a Story. Prove It.</h2>
+    <a href="index.html" class="btn-arena">
+      <div class="btn-inner">
+        <span class="btn-icon">⚔</span>
+        <span class="btn-text">Forge Your Card</span>
+        <span class="btn-icon">⚔</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<script>
+const ec = document.getElementById('embers');
+for (let i = 0; i < 30; i++) {
+  const e = document.createElement('div'); e.className = 'ember';
+  const sz = 1.5 + Math.random() * 2.5 + 'px';
+  e.style.width = sz; e.style.height = sz;
+  e.style.left = Math.random() * 100 + 'vw';
+  e.style.animationDuration = (9 + Math.random() * 14) + 's';
+  e.style.animationDelay = (Math.random() * 15) + 's';
+  e.style.setProperty('--dx', (Math.random() * 80 - 40) + 'px');
+  ec.appendChild(e);
+}
+</script>
+</body>
+</html>

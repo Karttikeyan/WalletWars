@@ -35,6 +35,8 @@ router.get('/battle-plan/:combatantId', wrap(async (req, res) =>
 // ── Revanchas / notificaciones ──────────────────────────────
 router.get('/matches/incoming/:combatantId', wrap(async (req, res) =>
   res.json(await db.getIncomingMatches(req.params.combatantId, Number(req.query.limit) || 20))));
+router.get('/matches/history/:combatantId', wrap(async (req, res) =>
+  res.json(await db.getMatchHistory(req.params.combatantId, Number(req.query.limit) || 20))));
 // ── REGISTRAR combatiente (consultar vs registrar · POST) ──
 // Recalcula stats vía el propio GET (una sola fuente de scoring),
 // valida nombre único, y persiste con forgeCombatant (upsert).
