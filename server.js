@@ -226,9 +226,14 @@ const { scores, walletPower } = scoring.forgeScores({ txCount, ageDays, uniqueCo
 
 app.use(express.static(__dirname));
 app.use('/api', require('./routes'));
-app.listen(PORT, () => {
-  console.log(`WalletWars dev server -> http://localhost:${PORT}`);
-  if (!ALCHEMY_KEY)    console.warn('AVISO: falta ALCHEMY_API_KEY');
-  if (!COINGECKO_KEY)  console.warn('AVISO: falta COINGECKO_API_KEY');
-  if (!BLOCKSCOUT_KEY) console.warn('AVISO: falta BLOCKSCOUT_API_KEY');
-});
+
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`WalletWars dev server -> http://localhost:${PORT}`);
+    if (!ALCHEMY_KEY)    console.warn('AVISO: falta ALCHEMY_API_KEY');
+    if (!COINGECKO_KEY)  console.warn('AVISO: falta COINGECKO_API_KEY');
+    if (!BLOCKSCOUT_KEY) console.warn('AVISO: falta BLOCKSCOUT_API_KEY');
+  });
+}
+
+module.exports = app;
