@@ -18,3 +18,5 @@ build/
 *.bak
 *.PNG
 *.png:Zone.Identifier
+.vercel
+.env*

@@ -1,0 +1,30 @@
+# Basura de WSL
+*:Zone.Identifier
+
+# Backups y duplicados de trabajo
+*.bak
+*.bak2
+*.bak3
+server.js.bak
+index.html.bak
+index.html.bak2
+index.html.bak3
+index(*).html
+
+# Parches y archivos de migración, no runtime
+*.patch
+*.rej
+card-migration.patch
+
+# Experimentos y capturas de debug
+card-bg-experiment.html
+Capturadcfvsdfsdf.PNG
+|card-canvas " combat-card-v2-1.html
+
+# Scripts de merge (ya no se necesitan en producción)
+fix_remaining_icons.js
+insert_real_icons.js
+
+# Tests locales
+test-siwe.js
+scoring.test.js

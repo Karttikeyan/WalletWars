@@ -1,5 +1,6 @@
 require('dotenv').config({ path: '.env.local' });
 const express = require('express');
+const path = require('path');
 const scoring = require('./scoring');
 const db = require('./supabaseService');
 const app = express();
@@ -224,7 +225,7 @@ const { scores, walletPower } = scoring.forgeScores({ txCount, ageDays, uniqueCo
   }
 });
 
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, '..')));
 app.use('/api', require('./routes'));
 
 if (require.main === module) {
