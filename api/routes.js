@@ -9,6 +9,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./supabaseService');
+const { getWalletData } = require('./walletData');
 
 const wrap = (fn) => (req, res) =>
   fn(req, res).catch((e) => { console.error(e); res.status(500).json({ error: e.message }); });
@@ -50,9 +51,13 @@ router.post('/combatant', requireAuth, wrap(async (req, res) => {
     return res.status(400).json({ error: 'name debe tener 3-24 caracteres' });
 
   // recalcula stats on-chain reutilizando el GET stateless
-  const r = await fetch(`http://localhost:${process.env.PORT || 3000}/api/wallet/${address}`);
-  const w = await r.json();
-  if (w.error) return res.status(502).json({ error: 'no se pudo leer la wallet on-chain' });
+  let w;
+  try {
+    w = await getWalletData(address);
+  } catch (e) {
+    console.error('WALLET DATA ERROR >>>', e);
+    return res.status(502).json({ error: 'no se pudo leer la wallet on-chain' });
+  }
 
   try {
     const card = await db.forgeCombatant({
