@@ -627,6 +627,81 @@
 @keyframes legendIconPulse { 0%,100%{filter:hue-rotate(20deg) saturate(1.8) brightness(1.5) drop-shadow(0 0 9px rgba(255,215,140,0.8));} 50%{filter:hue-rotate(22deg) saturate(2) brightness(1.65) drop-shadow(0 0 14px rgba(255,215,140,1));} }
 </style>
 
+<style>
+/* ============================================================
+   MOBILE FIX — WalletWars responsive pass
+   Ambito: pantallas hasta 480px (móviles). Desktop no se toca.
+   ============================================================ */
+@media (max-width: 480px) {
+
+  /* --- Pantalla de forjado (screen4): apilar card + form --- */
+  .screen4 {
+    flex-direction: column;
+    padding: 20px 14px 48px;
+    gap: 20px;
+    overflow-y: auto;
+  }
+  .s4-card-col { margin: 0 auto; }
+  .s4-customize-col { width: 100%; max-width: 420px; margin: 0 auto; }
+
+  /* --- Combat Card: se reduce en todos los sitios donde aparece
+         (forjado + modal "Ver Carta Completa" en la Arena) --- */
+  #cardMount {
+    zoom: 0.8;
+    margin: 0 auto;
+  }
+
+  /* --- Arena (screen5): sidebar arriba, contenido abajo, scroll --- */
+  .screen5 {
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .arena-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    flex-shrink: 0;
+    padding: 16px 14px;
+  }
+  .arena-mini-card {
+    max-width: 260px;
+    margin: 0 auto;
+  }
+  .arena-main {
+    padding: 16px 14px;
+  }
+  .arena-nav {
+    flex-wrap: wrap;
+  }
+
+  /* --- Combate (screen6): apilar luchadores en vertical, reducir cartas --- */
+  .screen6 {
+    overflow-y: auto;
+    justify-content: flex-start;
+    padding: 16px 0 40px;
+  }
+  .combat-arena {
+    flex-direction: column;
+    gap: 16px;
+    padding: 10px 0;
+  }
+  .combat-arena .fighter-col,
+  .combat-arena .card-col {
+    width: 100%;
+  }
+  .screen6 #cardMount,
+  .shadow-card {
+    zoom: 0.72;
+    margin: 0 auto;
+  }
+  .combat-intro {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+</style>
+
 </head>
 <body>
 
