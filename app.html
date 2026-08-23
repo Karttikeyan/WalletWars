@@ -634,6 +634,24 @@
    ============================================================ */
 @media (max-width: 480px) {
 
+  /* --- Pantalla de bienvenida (#landing / .main): apilar texto + card preview --- */
+  .main {
+    flex-direction: column;
+    padding: 12px 16px 40px;
+    gap: 28px;
+  }
+  .col-text {
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+  .col-card {
+    margin: 0 auto;
+  }
+  .combat-card {
+    width: min(280px, 82vw);
+  }
+
   /* --- Pantalla de forjado (screen4): apilar card + form --- */
   .screen4 {
     flex-direction: column;
@@ -659,6 +677,7 @@
   }
   .arena-sidebar {
     width: 100%;
+    flex: none;
     border-right: none;
     border-bottom: 1px solid rgba(201,168,76,0.15);
     flex-shrink: 0;
@@ -669,10 +688,19 @@
     margin: 0 auto;
   }
   .arena-main {
+    flex: none;
+    overflow: visible;
     padding: 16px 14px;
   }
   .arena-nav {
     flex-wrap: wrap;
+  }
+  .challenge-input-wrap {
+    flex-wrap: wrap;
+  }
+  .challenge-input {
+    min-width: 0;
+    width: 100%;
   }
 
   /* --- Combate (screen6): apilar luchadores en vertical, reducir cartas --- */
@@ -681,7 +709,16 @@
     justify-content: flex-start;
     padding: 16px 0 40px;
   }
+  .combat-ui {
+    position: static;
+  }
+  .combat-top {
+    padding: 16px 14px 0;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
   .combat-arena {
+    flex: none;
     flex-direction: column;
     gap: 16px;
     padding: 10px 0;
@@ -695,12 +732,18 @@
     zoom: 0.72;
     margin: 0 auto;
   }
+  .combat-next-btn {
+    position: relative;
+    margin: 20px auto 0;
+    display: block;
+  }
   .combat-intro {
     flex-direction: column;
     gap: 20px;
   }
 }
 </style>
+
 
 </head>
 <body>
@@ -1084,7 +1127,9 @@ document.getElementById('modalOverlay').addEventListener('click', function(e) {
 let walletAddress = null;
 let sessionToken = null;
 
+let connectingWallet = false;
 async function connectWallet(type) {
+  if (connectingWallet) return; // evita doble tap en móvil disparando dos logins a la vez
   if (type === 'walletconnect') {
     alert('WalletConnect coming soon — please use MetaMask or Coinbase Wallet for now.');
     return;
@@ -1093,12 +1138,19 @@ async function connectWallet(type) {
     alert('No wallet detected. Please install MetaMask or Coinbase Wallet.');
     return;
   }
+  connectingWallet = true;
   try {
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
     const address = ethers.getAddress(accounts[0]);
 
     const nonceRes = await fetch(`/api/auth/nonce/${address}`);
-    const { nonce } = await nonceRes.json();
+    const nonceData = await nonceRes.json().catch(() => ({}));
+
+    if (!nonceRes.ok || !nonceData.nonce) {
+      alert('Could not start login (network issue getting a nonce). Please try again.');
+      return;
+    }
+    const { nonce } = nonceData;
 
     const domain = window.location.host;
     const uri = window.location.origin;
@@ -1131,6 +1183,8 @@ async function connectWallet(type) {
     console.error('Wallet connection error:', err);
     if (err.code === 4001) return; // usuario rechazo la firma, sin error agresivo
     alert('Something went wrong connecting your wallet. Please try again.');
+  } finally {
+    connectingWallet = false;
   }
 }
 
