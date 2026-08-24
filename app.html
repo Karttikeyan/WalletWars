@@ -1437,6 +1437,34 @@ function resumeExistingCard(card) {
   showArena((card.name || '').toUpperCase());
 }
 
+// Vuelve a pedir /api/combatant/me tras un combate y refresca la Combat Card
+// (rank/ELO/W-L) sin tener que reconectar la wallet. No toca el resto del
+// flujo de forjado -- solo actualiza forgedData + applyData con lo real.
+async function refreshMyCard() {
+  try {
+    const meRes = await fetch('/api/combatant/me', {
+      headers: { 'Authorization': 'Bearer ' + sessionToken },
+    });
+    const meData = await meRes.json();
+    if (!meData.exists || !meData.card) return;
+    const card = meData.card;
+    forgedData = {
+      ...forgedData,
+      walletPower: card.walletPower,
+      scores: card.scores,
+      rank: card.rank,
+      wins: card.wins,
+      losses: card.losses,
+      elo: card.elo,
+    };
+    applyData(forgedData);
+  } catch (err) {
+    console.error('refreshMyCard error:', err);
+    // fallo silencioso: la carta se queda con el ultimo dato conocido,
+    // no rompemos el flujo de combate por esto
+  }
+}
+
 function startForging() {
   document.getElementById('forgingScreen').classList.add('open');
   const sparks = document.getElementById('forgeSparks');
@@ -1795,7 +1823,7 @@ function renderLeaderboard(rows) {
     return `<div class="lb-row${isMe ? ' you' : ''}">
       <div class="lb-rank${rankPos<=3?' top':''}">${rankPos}</div>
       <div class="lb-avatar">${avatar}</div>
-      <div class="lb-info"><div class="lb-name">${(r.combatant_name||'?').toUpperCase()}</div><div class="lb-title-lb">${(r.rank||'bronze').toUpperCase()} · ${r.wins||0} Wins</div></div>
+      <div class="lb-info"><div class="lb-name">${(r.combatant_name||'?').toUpperCase()}</div><div class="lb-title-lb">${(r.rank||'bronze').toUpperCase()} · ELO ${Math.round(r.elo||1000)} · ${r.wins||0} Wins</div></div>
       <div style="text-align:right"><div class="lb-power">${fmt(r.wallet_power||0)}</div><div class="lb-wins">${r.wins||0}W · ${r.losses||0}L</div></div>
     </div>`;
   }).join('');
@@ -2158,6 +2186,9 @@ function showCombatResult() {
   document.getElementById('resultScore1').textContent = w;
   document.getElementById('resultScore2').textContent = l;
   document.getElementById(iWon ? 'myCardWrap' : 'oppCardWrap').classList.add('victory-aura');
+
+  // refrescar la Combat Card real (rank/ELO/W-L) con el resultado ya persistido
+  refreshMyCard();
 }
 
 function shareResult(platform) {
