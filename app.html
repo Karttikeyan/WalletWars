@@ -512,16 +512,16 @@
 #cardMount .card-overlay { position:absolute; inset:0; border-radius:16px; pointer-events:none; }
 #cardMount .card-frame { position:absolute; inset:0; border-radius:16px; pointer-events:none; }
 #cardMount .card-content { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; border-radius:16px; overflow:hidden; }
-#cardMount .card-top { width:100%; display:flex; align-items:center; justify-content:space-between; padding:12px 14px 8px; background:linear-gradient(to bottom, rgba(0,0,0,0.85), transparent); }
+#cardMount .card-top { width:100%; display:flex; align-items:center; justify-content:space-between; padding:10px 14px 6px; background:linear-gradient(to bottom, rgba(0,0,0,0.85), transparent); }
 #cardMount .card-rank-badge { font-family:'Cinzel', serif; font-size:0.5rem; font-weight:700; letter-spacing:0.3em; text-transform:uppercase; padding:4px 10px; border-radius:3px; border:1px solid; }
 #cardMount .card-season { font-size:0.6rem; letter-spacing:0.25em; color:var(--gold); text-transform:uppercase; font-weight:600; }
-#cardMount .card-art-zone { flex:1; width:100%; position:relative; display:flex; align-items:center; justify-content:flex-start; padding-top:30px; }
+#cardMount .card-art-zone { flex:1; width:100%; position:relative; display:flex; align-items:center; justify-content:flex-start; padding-top:18px; }
 #cardMount .card-medallion { width:100px; height:100px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:3rem; position:relative; z-index:2; border:3px solid; transition:all 0.5s; }
 #cardMount .card-medallion::before { content:''; position:absolute; inset:-8px; border-radius:50%; border:1px solid; opacity:0.3; animation:medalRing 3s ease-in-out infinite; }
 #cardMount .card-medallion::after { content:''; position:absolute; inset:-16px; border-radius:50%; border:1px solid; opacity:0.15; animation:medalRing 3s ease-in-out infinite reverse; }
 @keyframes medalRing { 0%,100%{transform:scale(1);opacity:0.3;} 50%{transform:scale(1.08);opacity:0.6;} }
-#cardMount .card-bottom { width:100%; background:linear-gradient(to top, rgba(0,0,0,0.97) 62%, transparent); padding:22px 14px 12px; display:flex; flex-direction:column; gap:7px; }
-#cardMount .card-name-row { display:flex; flex-direction:column; align-items:center; gap:3px; }
+#cardMount .card-bottom { width:100%; background:linear-gradient(to top, rgba(0,0,0,0.97) 62%, transparent); padding:16px 14px 10px; display:flex; flex-direction:column; gap:5px; }
+#cardMount .card-name-row { display:flex; flex-direction:column; align-items:center; gap:2px; }
 #cardMount .card-name { font-family:'Cinzel Decorative', serif; font-size:1rem; font-weight:700; letter-spacing:0.15em; text-align:center; text-transform:uppercase; line-height:1.1; }
 #cardMount .card-title { font-family:'IM Fell English', serif; font-size:0.65rem; font-style:italic; letter-spacing:0.1em; color:rgba(168,180,192,0.6); text-align:center; }
 #cardMount .card-power-row { display:flex; align-items:center; gap:8px; }
@@ -538,10 +538,10 @@
 #cardMount .card-networth { display:flex; align-items:center; justify-content:space-between; padding:2px 2px; }
 #cardMount .card-networth-label { font-size:0.36rem; letter-spacing:0.3em; text-transform:uppercase; opacity:0.45; }
 #cardMount .card-networth-val { font-size:0.6rem; font-weight:700; letter-spacing:0.05em; color:var(--silver); }
-#cardMount .card-badge-block { display:flex; flex-direction:column; gap:5px; }
-#cardMount .card-badge-rowlabel { font-size:0.3rem; letter-spacing:0.3em; text-transform:uppercase; opacity:0.35; text-align:center; }
-#cardMount .card-badges { display:flex; justify-content:center; gap:6px; }
-#cardMount .card-badge { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.05rem; border:1.5px solid rgba(201,168,76,0.5); background:rgba(0,0,0,0.55); position:relative; transition:all 0.3s; }
+#cardMount .card-badge-block { display:flex; flex-direction:column; gap:3px; }
+#cardMount .card-badge-rowlabel { font-size:0.28rem; letter-spacing:0.25em; text-transform:uppercase; opacity:0.35; text-align:center; }
+#cardMount .card-badges { display:flex; justify-content:center; gap:5px; }
+#cardMount .card-badge { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.85rem; border:1.5px solid rgba(201,168,76,0.5); background:rgba(0,0,0,0.55); position:relative; transition:all 0.3s; }
 #cardMount .card-badge.earned { background:rgba(0,0,0,0.7); border-color:#F0D080; box-shadow:0 0 12px currentColor, 0 0 20px rgba(240,208,128,0.4); }
 #cardMount .card-badge.locked { filter:grayscale(1) brightness(0.3); }
 #cardMount .card-badge.earned::after { content:''; position:absolute; inset:-3px; border-radius:50%; border:1px solid currentColor; opacity:0.3; animation:badgePulse 2s ease-in-out infinite; }
@@ -896,7 +896,7 @@
       <div class="card-name-row">
         <div class="card-name" id="cardName" style="color:#C9A84C;">UNCLAIMED</div>
         <div class="card-title" id="cardTitle">Awaiting the forge</div>
-        <div id="founderTag" style="display:none;margin-top:4px;font-family:'Cinzel',serif;font-size:0.42rem;letter-spacing:0.28em;text-transform:uppercase;color:#0a0a0a;background:linear-gradient(135deg,#F0D080,#C9A84C,#8B6914);padding:3px 10px;border-radius:2px;font-weight:700;box-shadow:0 0 10px rgba(201,168,76,0.5);">⚔ Season 1 Founder</div>
+        <div id="founderTag" style="display:none;margin-top:2px;font-family:'Cinzel',serif;font-size:0.36rem;letter-spacing:0.22em;text-transform:uppercase;color:#0a0a0a;background:linear-gradient(135deg,#F0D080,#C9A84C,#8B6914);padding:1.5px 8px;border-radius:2px;font-weight:700;box-shadow:0 0 8px rgba(201,168,76,0.5);line-height:1.4;">⚔ Season 1 Founder</div>
       </div>
       <div class="card-power-row">
         <div class="card-power-label" style="color:var(--silver);">Wallet Power</div>
@@ -922,11 +922,11 @@
       <div class="card-badge-block">
         <div class="card-badge-rowlabel">Combat</div>
         <div class="card-badges" id="combatBadges">
-          <div class="card-badge earned" data-name="First Blood" data-desc="The first kill is always the sweetest." style="color:#CC2200;">🩸</div>
-          <div class="card-badge earned" data-name="On Fire" data-desc="Five wins in a row. Nobody's stopping you." style="color:#FF6600;">🔥</div>
-          <div class="card-badge locked" data-name="Giant Killer" data-desc="You slayed a wallet mightier than yours.">💀</div>
-          <div class="card-badge locked" data-name="Untouchable" data-desc="Won a battle without losing a single round.">⚡</div>
-          <div class="card-badge locked" data-name="Base Legend" data-desc="Among the deadliest warriors of the Season.">👑</div>
+          <div class="card-badge locked" data-key="firstBlood" data-name="First Blood" data-desc="The first kill is always the sweetest." style="color:#CC2200;">🩸</div>
+          <div class="card-badge locked" data-key="onFire" data-name="On Fire" data-desc="Five wins in a row. Nobody's stopping you." style="color:#FF6600;">🔥</div>
+          <div class="card-badge locked" data-key="giantKiller" data-name="Giant Killer" data-desc="Currently holding a win against a mightier wallet. Lose to a smaller one and it fades.">💀</div>
+          <div class="card-badge locked" data-key="untouchable" data-name="Untouchable" data-desc="Won a battle without losing a single round.">⚡</div>
+          <div class="card-badge locked" data-key="baseLegend" data-name="Base Legend" data-desc="Among the deadliest warriors of the Season.">👑</div>
         </div>
         <div class="card-badge-rowlabel">Profile</div>
         <div class="card-badges" id="profileBadges">
@@ -1297,6 +1297,11 @@ function setProfileBadge(key, earned){
   if(!el)return;
   el.className = earned ? 'card-badge earned' : 'card-badge locked';
 }
+function setCombatBadge(key, earned){
+  const el=document.querySelector(`#combatBadges .card-badge[data-key="${key}"]`);
+  if(!el)return;
+  el.className = earned ? 'card-badge earned' : 'card-badge locked';
+}
 
 function applyData(d){
   setWalletSeed(d.address || WALLET);
@@ -1315,6 +1320,16 @@ function applyData(d){
   const pb = d.profileBadges || {};
   setProfileBadge('OG', pb.OG); setProfileBadge('Explorer', pb.Explorer);
   setProfileBadge('Collector', pb.Collector); setProfileBadge('Builder', pb.Builder);
+
+  // Combat badges: solo llegan calculados cuando la carta ya existe
+  // (via /api/combatant/me). En un forjado nuevo (sin historial), d.combatBadges
+  // viene undefined y los 5 quedan en su estado 'locked' por defecto del HTML.
+  const cb = d.combatBadges || {};
+  setCombatBadge('firstBlood', cb.firstBlood);
+  setCombatBadge('onFire', cb.onFire);
+  setCombatBadge('giantKiller', cb.giantKiller);
+  setCombatBadge('untouchable', cb.untouchable);
+  setCombatBadge('baseLegend', cb.baseLegend);
 
   // Combat badges: si viene de una card ya existente, usamos W-L reales;
   // si es un forjado nuevo, 0W-0L.
@@ -1434,6 +1449,7 @@ function resumeExistingCard(card) {
     losses: card.losses,
     elo: card.elo,
     foundersBadge: !!card.foundersBadge,
+    combatBadges: card.combatBadges || {},
     // Collector/Builder no se pueden reconstruir sin datos extra guardados;
     // pendiente para cuando persistamos nftCollections/deployedContracts.
     profileBadges: { OG: (card.ageDays||0) >= 365, Explorer: (card.uniqueContracts||0) >= 20, Collector: false, Builder: false },
@@ -1463,6 +1479,7 @@ async function refreshMyCard() {
       losses: card.losses,
       elo: card.elo,
       foundersBadge: !!card.foundersBadge,
+      combatBadges: card.combatBadges || {},
     };
     applyData(forgedData);
   } catch (err) {
@@ -1836,7 +1853,7 @@ function renderLeaderboard(rows) {
     return `<div class="lb-row${isMe ? ' you' : ''}">
       <div class="lb-rank${rankPos<=3?' top':''}">${rankPos}</div>
       <div class="lb-avatar">${avatar}</div>
-      <div class="lb-info"><div class="lb-name">${(r.combatant_name||'?').toUpperCase()}${r.founders_badge ? ' <span style="color:#F0D080;" title="Season 1 Founder">⚔</span>' : ''}</div><div class="lb-title-lb">${(r.rank||'bronze').toUpperCase()} · ELO ${Math.round(r.elo||1000)} · ${r.wins||0} Wins</div></div>
+      <div class="lb-info"><div class="lb-name">${(r.combatant_name||'?').toUpperCase()}${r.founders_badge ? ' <span style="color:#F0D080;font-size:1.15em;text-shadow:0 0 6px rgba(240,208,128,0.9),0 0 12px rgba(201,168,76,0.6);vertical-align:middle;" title="Season 1 Founder">⚔</span>' : ''}</div><div class="lb-title-lb">${(r.rank||'bronze').toUpperCase()} · ELO ${Math.round(r.elo||1000)} · ${r.wins||0} Wins</div></div>
       <div style="text-align:right"><div class="lb-power">${fmt(r.wallet_power||0)}</div><div class="lb-wins">${r.wins||0}W · ${r.losses||0}L</div></div>
     </div>`;
   }).join('');
