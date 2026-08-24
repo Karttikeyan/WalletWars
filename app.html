@@ -896,6 +896,7 @@
       <div class="card-name-row">
         <div class="card-name" id="cardName" style="color:#C9A84C;">UNCLAIMED</div>
         <div class="card-title" id="cardTitle">Awaiting the forge</div>
+        <div id="founderTag" style="display:none;margin-top:4px;font-family:'Cinzel',serif;font-size:0.42rem;letter-spacing:0.28em;text-transform:uppercase;color:#0a0a0a;background:linear-gradient(135deg,#F0D080,#C9A84C,#8B6914);padding:3px 10px;border-radius:2px;font-weight:700;box-shadow:0 0 10px rgba(201,168,76,0.5);">⚔ Season 1 Founder</div>
       </div>
       <div class="card-power-row">
         <div class="card-power-label" style="color:var(--silver);">Wallet Power</div>
@@ -1326,6 +1327,10 @@ function applyData(d){
   const rank = d.rank || 'bronze';
   currentRank = rank;
   updateCardUI(rank);
+
+  // Season 1 Founders badge — solo se ve si el backend lo confirmó (founders_badge=true)
+  const founderTag = document.getElementById('founderTag');
+  if (founderTag) founderTag.style.display = d.foundersBadge ? 'inline-block' : 'none';
 }
 
 
@@ -1428,6 +1433,7 @@ function resumeExistingCard(card) {
     wins: card.wins,
     losses: card.losses,
     elo: card.elo,
+    foundersBadge: !!card.foundersBadge,
     // Collector/Builder no se pueden reconstruir sin datos extra guardados;
     // pendiente para cuando persistamos nftCollections/deployedContracts.
     profileBadges: { OG: (card.ageDays||0) >= 365, Explorer: (card.uniqueContracts||0) >= 20, Collector: false, Builder: false },
@@ -1456,6 +1462,7 @@ async function refreshMyCard() {
       wins: card.wins,
       losses: card.losses,
       elo: card.elo,
+      foundersBadge: !!card.foundersBadge,
     };
     applyData(forgedData);
   } catch (err) {
@@ -1580,6 +1587,12 @@ async function enterArena() {
     }
     document.getElementById('screen4').classList.remove('open');
     myCombatantId = data.card && data.card.id ? data.card.id : null;
+    // el POST /api/combatant devuelve las columnas crudas de Supabase (snake_case),
+    // a diferencia de /api/combatant/me que ya viene normalizado a camelCase
+    if (forgedData) {
+      forgedData.foundersBadge = !!(data.card && data.card.founders_badge);
+      applyData(forgedData);
+    }
     setTimeout(() => showArena(name.toUpperCase()), 400);
   } catch (err) {
     console.error('enterArena error:', err);
@@ -1823,7 +1836,7 @@ function renderLeaderboard(rows) {
     return `<div class="lb-row${isMe ? ' you' : ''}">
       <div class="lb-rank${rankPos<=3?' top':''}">${rankPos}</div>
       <div class="lb-avatar">${avatar}</div>
-      <div class="lb-info"><div class="lb-name">${(r.combatant_name||'?').toUpperCase()}</div><div class="lb-title-lb">${(r.rank||'bronze').toUpperCase()} · ELO ${Math.round(r.elo||1000)} · ${r.wins||0} Wins</div></div>
+      <div class="lb-info"><div class="lb-name">${(r.combatant_name||'?').toUpperCase()}${r.founders_badge ? ' <span style="color:#F0D080;" title="Season 1 Founder">⚔</span>' : ''}</div><div class="lb-title-lb">${(r.rank||'bronze').toUpperCase()} · ELO ${Math.round(r.elo||1000)} · ${r.wins||0} Wins</div></div>
       <div style="text-align:right"><div class="lb-power">${fmt(r.wallet_power||0)}</div><div class="lb-wins">${r.wins||0}W · ${r.losses||0}L</div></div>
     </div>`;
   }).join('');
